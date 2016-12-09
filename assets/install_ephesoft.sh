@@ -32,4 +32,4 @@ cd ..
 
 echo "Remove the installer files... "
 # get rid of installer - makes image smaller
-#rm -rf /tmp/$EPHESOFT_ZIP installer
+rm -rf /tmp/$EPHESOFT_ZIP installer
