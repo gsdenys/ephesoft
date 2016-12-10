@@ -11,10 +11,8 @@ RUN apt-get -fy install
 RUN apt-get autoremove
 RUN apt-get autoclean
 
-ENV EPEHSOFT_VERSION=4.0.2.0
-
 #use the Dockerfile to download helps future build. Docker will mantain it cached
-ADD http://www.ephesoft.com/Ephesoft_Product/Ephesoft_Community_$EPEHSOFT_VERSION/Ephesoft_Community_Release_$EPHESOFT_VERSION.zip /tmp/ephesoft.zip
+ADD http://www.ephesoft.com/Ephesoft_Product/Ephesoft_Community_4.0.2.0/Ephesoft_Community_Release_4.0.2.0.zip /tmp/ephesoft.zip
 
 # install ephesoft
 COPY assets/install_ephesoft.sh /tmp/install_ephesoft.sh
