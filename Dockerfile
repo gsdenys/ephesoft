@@ -1,22 +1,54 @@
 #gsdenys/ephesoft
 
-FROM ubuntu:trusty
+FROM centos:6
 MAINTAINER Denys G. Santos <gsdenys@gmail.com>
 
-#SO upgrade and dependency install
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN apt-get install -y unzip ufw wget apt-utils software-properties-common
-RUN apt-get -fy install
-RUN apt-get autoremove
-RUN apt-get autoclean
+#ADD yum repository for MariaDB
+ADD assets/MariaDB.repo /etc/yum.repos.d/MariaDB.repo
 
-#use the Dockerfile to download helps future build. Docker will mantain it cached
+#Update repositories
+RUN yum update -y
+
+#Install MariaDB
+RUN yum install MariaDB-server MariaDB-client -y
+
+#Install dependencies
+RUN yum install -y perl \
+				   m4 \
+				   unzip \
+				   tar \
+				   fipscheck \
+				   freetype \
+				   GConf2 \
+				   gnome-vfs2 \
+				   iptables
+
+#Install autoconf
+ADD assets/autoconf-2.69-12.2.noarch.rpm /tmp/autoconf-2.69-12.2.noarch.rpm
+RUN rpm -Uvh /tmp/autoconf-2.69-12.2.noarch.rpm
+
+#Add ephesoft installer to the tmp directory
+#ADD assets/Ephesoft_Community_Release_4.0.2.0.zip /tmp/ephesoft.zip
 ADD http://www.ephesoft.com/Ephesoft_Product/Ephesoft_Community_4.0.2.0/Ephesoft_Community_Release_4.0.2.0.zip /tmp/ephesoft.zip
 
-# install ephesoft
-COPY assets/install_ephesoft.sh /tmp/install_ephesoft.sh
-RUN /tmp/install_ephesoft.sh && \
-    rm -f /tmp/install_ephesoft.sh
+#Configure environment to ephesoft instalation
+ADD assets/configure.sh /tmp/configure.sh
+RUN /tmp/configure.sh
 
+#Install ephesoft
+WORKDIR /tmp/installer
+RUN ./install-helper -silentinstall
+
+#Run Post Install Script
+ADD assets/post-install.sh /tmp/post-install.sh
+RUN /tmp/post-install.sh
+
+#add startup script
+ADD assets/startup.sh /etc/init.d/startup.sh
+
+#Set default workdir and expose 8080
+WORKDIR /
 EXPOSE 8080
+
+#show ephesoft log on startup
+CMD ["/etc/init.d/startup.sh"]
