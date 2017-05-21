@@ -29,8 +29,8 @@ ADD assets/install-autoconf.sh /tmp/install-autoconf.sh
 RUN /tmp/install-autoconf.sh
 
 #Add ephesoft installer to the tmp directory
-ADD assets/Ephesoft_Community_Release_4.0.2.0.zip /tmp/ephesoft.zip
-#ADD http://www.ephesoft.com/Ephesoft_Product/Ephesoft_Community_4.0.2.0/Ephesoft_Community_Release_4.0.2.0.zip /tmp/ephesoft.zip
+#ADD assets/Ephesoft_Community_Release_4.0.2.0.zip /tmp/ephesoft.zip
+ADD http://www.ephesoft.com/Ephesoft_Product/Ephesoft_Community_4.0.2.0/Ephesoft_Community_Release_4.0.2.0.zip /tmp/ephesoft.zip
 
 #Configure environment to ephesoft instalation
 ADD assets/configure.sh /tmp/configure.sh
