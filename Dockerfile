@@ -21,11 +21,12 @@ RUN yum install -y perl \
 				   freetype \
 				   GConf2 \
 				   gnome-vfs2 \
-				   iptables
+				   iptables \
+				   wget
 
 #Install autoconf
-ADD assets/autoconf-2.69-12.2.noarch.rpm /tmp/autoconf-2.69-12.2.noarch.rpm
-RUN rpm -Uvh /tmp/autoconf-2.69-12.2.noarch.rpm
+ADD assets/install-autoconf.sh /tmp/install-autoconf.sh
+RUN /tmp/install-autoconf.sh
 
 #Add ephesoft installer to the tmp directory
 #ADD assets/Ephesoft_Community_Release_4.0.2.0.zip /tmp/ephesoft.zip
@@ -40,6 +41,7 @@ WORKDIR /tmp/installer
 RUN ./install-helper -silentinstall
 
 #Run Post Install Script
+WORKDIR /tmp/
 ADD assets/post-install.sh /tmp/post-install.sh
 RUN /tmp/post-install.sh
 
