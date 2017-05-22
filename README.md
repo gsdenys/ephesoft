@@ -1,4 +1,4 @@
-# ephesoft
+# Ephesoft
 The Ephesoft community edition docker project
 
 ## usage
