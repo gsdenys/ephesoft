@@ -1,33 +1,20 @@
 #!/usr/bin/env sh
 
-##
-#configure MariaDB
-##
-/etc/init.d/mysql start
+#uncompress ephesoft installer .zip 
+unzip /tmp/ephesoft.zip -d /tmp/installer
 
-mysql -uroot -e "CREATE DATABASE IF NOT EXISTS ephesoft"
+#set the configuration propertis filepath
+CONFIG_PROPERTIES_FILE=/tmp/installer/Response-Files/config.properties 
 
-mysql -uroot -e "GRANT USAGE ON *.* TO 'ephesoft'@'localhost' IDENTIFIED BY 'ephesoft'"
-mysql -uroot -e "DROP USER 'ephesoft'@'localhost'"
-mysql -uroot -e "GRANT USAGE ON *.* TO 'ephesoft'@'%' IDENTIFIED BY 'ephesoft'"
-mysql -uroot -e "DROP USER 'ephesoft'@'%'"
-mysql -uroot -e "CREATE USER 'ephesoft'@'localhost' IDENTIFIED BY 'ephesoft'"
-mysql -uroot -e "GRANT ALL PRIVILEGES ON ephesoft.* TO 'ephesoft'@'localhost' WITH GRANT OPTION"
-mysql -uroot -e "CREATE USER 'ephesoft'@'%' IDENTIFIED BY 'ephesoft'"
-mysql -uroot -e "GRANT ALL PRIVILEGES ON ephesoft.* TO 'ephesoft'@'%' WITH GRANT OPTION"
+#
+# Alter the intaller config properties. Set:
+#	NO (n) to a new database instance, 
+# 	YES (y) to a change server name, and;
+#	LOCALHOST (localhost) to a server name
+# 
+sed -i "/input_new_database_instance=/ s/=y/=n/" $CONFIG_PROPERTIES_FILE
+sed -i "/input_change_server_name=/ s/=n/=y/" $CONFIG_PROPERTIES_FILE
+sed -i "/input_changed_server_name=/ s/=turbo-VirtualBox/=localhost/" $CONFIG_PROPERTIES_FILE
 
-mysql -uroot -e "SET PASSWORD = PASSWORD('turbo')"
-
-##
-#configure installer
-##
-cd /tmp
-unzip ephesoft.zip -d installer
-cd installer
-
-sed -i "/input_new_database_instance=/ s/=y/=n/" Response-Files/config.properties 
-
-chmod 755 install install-helper
-
-cd /tmp/
-wget ftp://ftp.pbone.net/mirror/ftp5.gwdg.de/pub/opensuse/repositories/home:/monkeyiq:/centos6updates/CentOS_CentOS-6/noarch/autoconf-2.69-12.2.noarch.rpm
+# make installer files executable
+chmod 755 /tmp/installer/install*

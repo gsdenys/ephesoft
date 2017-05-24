@@ -3,15 +3,6 @@
 FROM centos:6
 MAINTAINER Denys G. Santos <gsdenys@gmail.com>
 
-#ADD yum repository for MariaDB
-ADD assets/MariaDB.repo /etc/yum.repos.d/MariaDB.repo
-
-#Update repositories
-RUN yum update -y
-
-#Install MariaDB
-RUN yum install MariaDB-server MariaDB-client -y
-
 #Install dependencies
 RUN yum install -y perl \
 				   m4 \
@@ -47,6 +38,20 @@ RUN /tmp/post-install.sh
 
 #add startup script
 ADD assets/startup.sh /etc/init.d/startup.sh
+
+#Add hsqldb to the /opt directory
+ADD http://repo2.maven.org/maven2/com/h2database/h2/1.4.195/h2-1.4.195.jar /opt/Ephesoft/JavaAppServer/lib/h2.jar
+
+#Set environment variables
+ENV DB_DATASOURCE=""
+ENV DB_USER=""
+ENV DB_PASSWD=""
+ENV DB_DIALECT=""
+ENV DB_DRIVER=""
+
+ENV HOSTNAME=""
+
+#SVOLUME ["/driver"]
 
 #Set default workdir and expose 8080
 WORKDIR /
