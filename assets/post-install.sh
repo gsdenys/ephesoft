@@ -13,18 +13,17 @@ sed -i "s/sudo/\ /g" /etc/init.d/ephesoft
 #Set openoffice autostart as false
 sed -i "/openoffice.autoStart=/ s/=true/=false/" $OPEN_OFFICE_CONFIG
 
-#Create simbolic link for java
-ln -s /opt/Ephesoft/Dependencies/jdk1.7.0_71/bin/java /usr/bin/java
+
+#set MariaDB as a default database
+sed -i "/dataSource.url=/ s|=.*|=jdbc:mysql:\/\/localhost:3306\/ephesoft|" $DB_PROPERTIES_FILE
+sed -i "/dataSource.username=/ s|=.*|=ephesoft|" $DB_PROPERTIES_FILE
+sed -i "/dataSource.password=/ s|=.*|=ephesoft|" $DB_PROPERTIES_FILE
+#sed -i "/dataSource.dialect=/ s|=.*|=org.hibernate.dialect.MySQL5InnoDBDialect|" $DB_PROPERTIES_FILE
+#sed -i "/dataSource.driverClassName=/ s|=.*|=org.h2.Driver|" $DB_PROPERTIES_FILE
 
 
-
-#set H2 as a default database
-sed -i "/dataSource.url=/ s|=.*|=jdbc:h2:~\/test|" $DB_PROPERTIES_FILE
-sed -i "/dataSource.username=/ s|=.*|=test|" $DB_PROPERTIES_FILE
-sed -i "/dataSource.password=/ s|=.*|=|" $DB_PROPERTIES_FILE
-sed -i "/dataSource.dialect=/ s|=.*|=org.hibernate.dialect.H2Dialect|" $DB_PROPERTIES_FILE
-sed -i "/dataSource.driverClassName=/ s|=.*|=org.h2.Driver|" $DB_PROPERTIES_FILE
-
+#create mount poiint to shared folder
+mkdir /shared
 
 
 # Add shared loader driver libary - use this folder to mount the host directory that contains
@@ -32,26 +31,25 @@ sed -i "/dataSource.driverClassName=/ s|=.*|=org.h2.Driver|" $DB_PROPERTIES_FILE
 #
 # You also can use volume to pass to the container the jars that you wanna load.
 # 
-mkdir /driver
-sed -i "/shared.loader=/ s|=.*|=/driver/*.jar|" /opt/Ephesoft/JavaAppServer/conf/catalina.properties
-
-
-
-#Add the fatal log for com.ephesoft.dcma.da.common.ExecuteUpdatePatch 
-#LOG4J_FILE=/opt/Ephesoft/Application/log4j.xml
-#sed -i '/<\/log4j:configuration>/ s|</log4j:configuration>|\t<logger name="com.ephesoft.dcma.da.common.ExecuteUpdatePatch">\n\t\t<level value="FATAL" />\n\t</logger>\n</log4j:configuration>|' $LOG4J_FILE
-
+#mkdir /driver
+#sed -i "/shared.loader=/ s|=.*|=/driver/*.jar|" /opt/Ephesoft/JavaAppServer/conf/catalina.properties
 
 
 #remove garbadge
+yum clean packages
+yum clean headers
+yum clean metadata
+yum clean dbcache
+
 rm -rf /tmp/*
 rm -rf /opt/sources/*
+
 cd /opt/Ephesoft/Dependencies/
-rm -rf checkinstall.tar.gz \
-	   ghostscript.tar.gz \
-	   imagemagick.tar.gz \
-	   leptonica.tar.gz \
-	   LibreOffice.tar.gz \
-	   mariadb.tar.gz \
+
+rm -rf *.tar.gz \
+	   dependencies_redhat \
+	   dependencies_ubuntu \
+	   svutil.cpp \
+	   UpgradeEphesoft.jar \
 	   MariaDBSetup \
-	   tesseract.tar.gz
+	   luke
