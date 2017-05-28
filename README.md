@@ -1,8 +1,6 @@
 # Ephesoft
 The Ephesoft community edition docker project
 
-## usage
-
 To start Ephesoft docker container use the follow command 
  
     docker run -p 8080:8080 gsdenys/ephesoft
