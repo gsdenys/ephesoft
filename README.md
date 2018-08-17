@@ -32,6 +32,11 @@ After command executed, wait for Tomcat startup successfully and with a browser 
 
 http://localhost:8080/dcma
 
+Use the following credentials:
+
+USER= ephesoft
+PASSWORD= demo
+
 **PS:** If you want to have a container with MariaDB already installed, use the following command:
  
     docker run -p 8080:8080 gsdenys/ephesoft:mariadb
